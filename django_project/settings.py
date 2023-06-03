@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'blog.apps.BlogConfig',#blog is the name of the app,it is added because we created a new app, we need to add it manually
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
