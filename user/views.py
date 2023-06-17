@@ -2,6 +2,8 @@ from django.shortcuts import render , redirect
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from .forms import UserUpdateForm , ProfileUpdateForm
 
 def register(request):
     # here we using save function foe getting the form and 
@@ -17,14 +19,32 @@ def register(request):
             form.save()
             username = form.cleaned_data.get('username')
             messages.success(request,f'Account created for {username}!')
-            return redirect('blog-home')
+            return redirect('user-login')
     else :
         form = UserCreationForm()
     
     return render(request,'user/register.html',{'form':form})
     
 
+@login_required
+def profile(request):
 
-def login(request):
-    return render(request,'user/login.html')
+    if request.method == 'POST':
+        u_from = UserUpdateForm(request.POST,instance=request.user)#request.POST is used to get the data from the form
+        p_form = ProfileUpdateForm(request.POST,request.FILES,instance = request.user.profile)#request.FILES is used to get the image data
+        #request.POST is used to get the data from the form
+        if u_from.is_valid() and p_form.is_valid():
+            u_from.save()
+            p_form.save()
+            messages.success(request,f'Account updated!')
+            return redirect('user-profile')
+    else :
+        u_from = UserUpdateForm(instance=request.user)#instance is used to populate the form with the current user data
+        p_form = ProfileUpdateForm(instance = request.user.profile)#instance is used to populate the form with the current user data
+
+    context = {
+        'u_form':u_from,
+        'p_form':p_form
+    }
+    return render(request,'user/profile.html',context)
 

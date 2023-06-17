@@ -17,8 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path , include # include is used to include other urls.py files
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('blog/',include('blog.urls')),#include is used to include other urls.py files
     path('user/',include('user.urls')),#include is used to include other urls.py files
 ]
+
+#this is used to serve the media files in the development server
+if settings.DEBUG:#if the debug mode is on
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
