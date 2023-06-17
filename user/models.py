@@ -5,16 +5,17 @@ from PIL import Image
 # Create your models here.
 #this is a one to one relationship with the user model
 class Profile(models.Model):
-    user = models.OneToOneField(User,on_delete=models.CASCADE)#if the user is deleted then the profile is also deleted
+    user = models.OneToOneField(User,on_delete=models.CASCADE,related_name='profile')#if the user is deleted then the profile is also dele
     image = models.ImageField(default='default.jpg',upload_to='profile_pics')#upload_to is the directory where the image is stored
     #we have to install pillow for this
     def __str__(self):
         return f'{self.user.username} Profile'
     
 
-    def save (self):
+    def save (self,*args,**kwargs):
         
-        super().save()#this will run the save method of the parent class
+        super(Profile, self).save(*args, **kwargs)
+#this will run the save method of the parent class
         #beacuse we want to resize the image before saving it
 
         img = Image.open(self.image.path)#this will open the image that we have uploaded
