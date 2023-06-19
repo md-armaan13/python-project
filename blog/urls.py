@@ -1,10 +1,11 @@
 from django.urls import path
 from . import views # . means current directory
-from .views import PostListView , PostDetailView , PostCreateView , PostUpdateView
+from .views import PostListView , PostDetailView , PostCreateView , PostUpdateView , UserPostListView
 
 urlpatterns = [
    path('home/',PostListView.as_view(),name='blog-home'),#name is used to refer to this path
    path('about/',views.about,name='blog-about'),
+   path('post/user/<int:pk>/',UserPostListView.as_view(),name='user-posts'),
    path('post/<int:pk>/',PostDetailView.as_view(),name='post-detail'),
    path('post/new/',PostCreateView.as_view(),name='post-create'),
    path('post/<int:pk>/update/',PostUpdateView.as_view(),name='post-update'),

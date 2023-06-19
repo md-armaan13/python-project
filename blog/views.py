@@ -1,6 +1,6 @@
 from typing import Optional
 from django.forms.models import BaseModelForm
-from django.shortcuts import render
+from django.shortcuts import render ,get_object_or_404
 
 from django.http import HttpResponse  # sending the response
 from .models import Post
@@ -78,6 +78,19 @@ class PostDeleteView(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
         if self.request.user == post.author:    
             return True
         return False
+
+class UserPostListView(ListView):
+    model = Post
+    context_object_name = 'posts'
+    template_name = 'blog/user_posts.html'
+    #`get_queryset` method is used to get the list of objects from the database
+    def get_queryset(self):
+        #kwargs is a dictionary that contains the keyword arguments passed to the view
+        print(self.kwargs.get('pk'))#pk is the primary key of the user
+        #here we are getting the user from the database using the primary key
+        user = get_object_or_404(User,id=self.kwargs.get('pk'))#get_object_or_404 is used to get the object from the database or return 404 error
+        print(Post.objects.filter(author=user).order_by('-date_posted'))
+        return Post.objects.filter(author=user).order_by('-date_posted')
 
 def about(request):
     return render(request, 'blog/about.html')
