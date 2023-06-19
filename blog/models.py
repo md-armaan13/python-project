@@ -3,6 +3,8 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 # Create your models here.
 
+from django.urls import reverse 
+
 
 class Post(models.Model):
     # max length of the title is 100 characters
@@ -17,3 +19,11 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     # if you want to keep the post even after the user is deleted, use on_delete = models.SET_NULL
     # this is one to many relationship, one user can have many posts, but one post can have only one user
+    def __str__(self):
+            return self.title
+    
+    #this method is used to redirect to the post detail page after creating a post
+    #`get_absolute_url` method is used to redirect to a specific route after creating a post 
+    def get_absolute_url(self):
+            
+         return reverse('post-detail',kwargs={'pk':self.pk})
